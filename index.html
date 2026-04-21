@@ -1,0 +1,584 @@
+<!doctype html>
+<html lang="hu">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Job Trends Data Story</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                50: "#eef4ff",
+                100: "#dbeafe",
+                500: "#2563eb",
+                700: "#1d4ed8",
+                900: "#0f172a",
+              },
+              warm: "#f3efe4",
+            },
+            boxShadow: {
+              soft: "0 10px 30px rgba(15, 23, 42, 0.08)",
+            },
+          },
+        },
+      };
+    </script>
+    <link rel="stylesheet" href="styles/main.css" />
+    <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  </head>
+  <body class="bg-warm text-slate-900 antialiased">
+    <div id="app">
+      <nav
+        class="sticky top-0 z-50 w-full border-b border-slate-200/80 bg-white/95 backdrop-blur-md"
+      >
+        <div
+          class="navbar-shell mx-auto flex w-full max-w-6xl items-center gap-4 px-4 py-3 sm:px-6"
+        >
+          <a
+            href="#overview"
+            class="brand-lockup shrink-0"
+            aria-label="AI Job Trends kezdőszakasz"
+          >
+            <span class="brand-mark" aria-hidden="true"></span>
+            <span class="brand-copy">
+              <strong>AI Job Trends</strong>
+              <small>Data Story</small>
+            </span>
+          </a>
+
+          <div class="nav-track">
+            <a href="#overview" class="nav-link is-active">Áttekintés</a>
+            <a href="#viz-1" class="nav-link">Iparági trend</a>
+            <a href="#viz-2" class="nav-link">Bér és kockázat</a>
+            <a href="#viz-3" class="nav-link">Oktatás és iparág</a>
+            <a href="#viz-4" class="nav-link">Távmunka-hatás</a>
+            <a href="#viz-5" class="nav-link">Szélsőértékek</a>
+          </div>
+
+          <a href="#conclusion" class="nav-cta nav-track-link shrink-0"
+            >Következtetés</a
+          >
+        </div>
+      </nav>
+
+      <header id="overview" class="w-full">
+        <div class="relative h-[52vh] min-h-[360px] w-full overflow-hidden">
+          <img
+            src="assets/ai-job-trends-banner.svg"
+            alt="Figyelemfelkeltő, futurisztikus AI robot vizuál"
+            class="h-full w-full object-cover"
+          />
+          <div
+            class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-black/35"
+          ></div>
+          <div
+            class="absolute inset-0 mx-auto flex h-full w-full max-w-6xl items-end px-4 pb-10 sm:px-6"
+          >
+            <div class="max-w-3xl">
+              <p
+                class="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-blue-100"
+              >
+                AI labor market analytics
+              </p>
+              <h1
+                class="text-3xl font-bold leading-tight text-white sm:text-5xl"
+              >
+                Az AI hatásának megértése a munkaerőpiacon
+              </h1>
+              <p class="mt-4 max-w-2xl text-sm text-blue-50 sm:text-base">
+                Mely munkakörök növekednek, melyek sérülékenyek, és hol várható
+                a legerősebb átrendeződés 2030-ig?
+              </p>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <section class="mx-auto mt-6 w-full max-w-6xl px-4 sm:px-6">
+        <div
+          class="rounded-2xl border border-blue-100 bg-white p-5 shadow-soft sm:p-7"
+        >
+          <div class="mb-4 flex flex-wrap gap-2">
+            <span
+              class="rounded-full border border-blue-100 bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700"
+              >30k adatpont</span
+            >
+            <span
+              class="rounded-full border border-blue-100 bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700"
+              >7 iparág</span
+            >
+            <span
+              class="rounded-full border border-blue-100 bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700"
+              >Időtáv: 2024 → 2030</span
+            >
+          </div>
+          <div class="grid gap-4 md:grid-cols-3">
+            <article
+              class="rounded-xl border border-slate-200 bg-gradient-to-br from-white to-blue-50/40 p-4"
+            >
+              <p
+                class="text-[11px] font-bold uppercase tracking-wider text-slate-500"
+              >
+                Projektcél
+              </p>
+              <p class="mt-2 text-sm font-medium text-slate-800">
+                Az AI munkaerőpiaci hatásának szakmai és érthető bemutatása.
+              </p>
+            </article>
+            <article
+              class="rounded-xl border border-slate-200 bg-gradient-to-br from-white to-blue-50/40 p-4"
+            >
+              <p
+                class="text-[11px] font-bold uppercase tracking-wider text-slate-500"
+              >
+                Lefedett iparágak
+              </p>
+              <p class="mt-2 text-sm font-medium text-slate-800">
+                IT, pénzügy, egészségügy, oktatás, gyártás, kereskedelem,
+                közlekedés és kapcsolódó szerepkörök.
+              </p>
+            </article>
+            <article
+              class="rounded-xl border border-slate-200 bg-gradient-to-br from-white to-blue-50/40 p-4"
+            >
+              <p
+                class="text-[11px] font-bold uppercase tracking-wider text-slate-500"
+              >
+                Kulcs dimenziók
+              </p>
+              <p class="mt-2 text-sm font-medium text-slate-800">
+                Bérszint, automatizációs kockázat, távmunka arány, nyitott
+                pozíciók és végzettségi szint.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="mx-auto mt-8 grid w-full max-w-6xl gap-4 px-4 sm:px-6 md:grid-cols-2"
+      >
+        <article
+          class="rounded-2xl border border-blue-100 bg-white p-6 shadow-soft"
+        >
+          <h2 class="mb-3 text-lg font-bold text-blue-900">
+            Elemzési narratíva
+          </h2>
+          <p class="text-sm leading-relaxed text-slate-600">
+            Az oldal a makró trendektől halad az összefüggések felé, majd
+            konkrét munkaköri kockázatokkal zár. Így egy stratégiai szintű, de
+            gyakorlati döntéseket is támogató képet ad az AI által formált
+            munkaerőpiacról.
+          </p>
+        </article>
+        <article
+          class="rounded-2xl border border-blue-100 bg-white p-6 shadow-soft"
+        >
+          <h2 class="mb-3 text-lg font-bold text-blue-900">
+            Olvasási útmutató
+          </h2>
+          <p class="text-sm leading-relaxed text-slate-600">
+            Minden vizualizációnál FAQ-szerű, lenyitható blokkok segítik az
+            értelmezést: <strong>mit mutat az ábra</strong>,
+            <strong>miért releváns</strong>, valamint
+            <strong>milyen korlátokat</strong> kell figyelembe venni.
+          </p>
+        </article>
+      </section>
+
+      <main class="mx-auto mt-8 grid w-full max-w-6xl gap-6 px-4 pb-10 sm:px-6">
+        <section
+          id="viz-1"
+          class="section-anchor rounded-2xl border border-blue-100 bg-white p-5 shadow-soft sm:p-6"
+        >
+          <div class="mb-4 flex items-center justify-between gap-3">
+            <h3 class="section-title text-xl font-bold text-slate-900">
+              01 – Iparági átrendeződés (2024 → 2030)
+            </h3>
+            <span
+              class="rounded-full border border-blue-100 bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700"
+              >Makró trend</span
+            >
+          </div>
+          <div class="mb-4 grid gap-3 md:grid-cols-3">
+            <article class="insight-card">
+              <p class="insight-kicker">Mit mutat?</p>
+              <p class="insight-text">
+                Iparáganként két oszlop jelenik meg: a szürke a 2024-es, a kék a
+                2030-ra vetített átlagos nyitott pozíciószámot mutatja. A kék
+                oszlop végén látható százalék a két év közötti változást jelzi.
+              </p>
+            </article>
+            <article class="insight-card">
+              <p class="insight-kicker">Miért fontos?</p>
+              <p class="insight-text">
+                Első ránézésre kiderül, hol bővülnek és hol szűkülnek a
+                munkaerőpiaci lehetőségek 2030-ig – ez a stratégiai kiindulópont
+                az összes többi elemzéshez.
+              </p>
+            </article>
+            <article class="insight-card">
+              <p class="insight-kicker">Értelmezési korlát</p>
+              <p class="insight-text">
+                Az átlagok az összes munkakört összevonják az iparágon belül; az
+                egyes pozíciók között akár jelentős szórás is lehet.
+              </p>
+            </article>
+          </div>
+          <div
+            class="overflow-x-auto rounded-xl border border-slate-200 bg-white p-3"
+          >
+            <div id="chart-industry-shift" class="viz-chart min-h-[340px]">
+              <p class="chart-placeholder">Vizualizáció betöltése...</p>
+            </div>
+          </div>
+        </section>
+
+        <section
+          id="viz-2"
+          class="section-anchor rounded-2xl border border-blue-100 bg-white p-5 shadow-soft sm:p-6"
+        >
+          <div class="mb-4 flex items-center justify-between gap-3">
+            <h3 class="section-title text-xl font-bold text-slate-900">
+              02 – Bérszint és automatizációs kockázat
+            </h3>
+            <span
+              class="rounded-full border border-blue-100 bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700"
+              >Kapcsolatvizsgálat</span
+            >
+          </div>
+          <div class="mb-4 grid gap-3 md:grid-cols-3">
+            <article class="insight-card">
+              <p class="insight-kicker">Mit mutat?</p>
+              <p class="insight-text">
+                Minden pont egy munkakörcsaládot jelöl (legalább 10 adat
+                átlaga). A vízszintes tengely az átlagos automatizációs
+                kockázatot, a függőleges az átlagos medián bért mutatja. A
+                szaggatott vonal a trendet jelzi.
+              </p>
+            </article>
+            <article class="insight-card">
+              <p class="insight-kicker">Miért fontos?</p>
+              <p class="insight-text">
+                Ha a bér és a kockázat szorosan összefüggne, a trendvonal
+                meredeken lejt – ehelyett közel vízszintes. Ez azt jelenti, hogy
+                a bérszint önmagában nem véd az AI-automatizáció ellen.
+              </p>
+            </article>
+            <article class="insight-card">
+              <p class="insight-kicker">Értelmezési korlát</p>
+              <p class="insight-text">
+                Munkakörönként átlagolt értékeket mutat; az egyéni tapasztalat
+                és az iparági kontextus ettől eltérhet. A buborék mérete az
+                adatpontok számát jelzi.
+              </p>
+            </article>
+          </div>
+          <div
+            class="overflow-x-auto rounded-xl border border-slate-200 bg-white p-3"
+          >
+            <div id="chart-salary-risk" class="viz-chart min-h-[340px]">
+              <p class="chart-placeholder">Vizualizáció betöltése...</p>
+            </div>
+          </div>
+        </section>
+
+        <section
+          id="viz-3"
+          class="section-anchor rounded-2xl border border-blue-100 bg-white p-5 shadow-soft sm:p-6"
+        >
+          <div class="mb-4 flex items-center justify-between gap-3">
+            <h3 class="section-title text-xl font-bold text-slate-900">
+              03 – Oktatás × iparág kockázati hőtérkép
+            </h3>
+            <span
+              class="rounded-full border border-blue-100 bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700"
+              >Rétegzett nézet</span
+            >
+          </div>
+          <div class="mb-4 grid gap-3 md:grid-cols-3">
+            <article class="insight-card">
+              <p class="insight-kicker">Mit mutat?</p>
+              <p class="insight-text">
+                Minden cella az adott iparág és végzettségi szint kombinációjára
+                jellemző átlagos automatizációs kockázatot mutatja (0–100
+                skálán). Piros = magas, zöld = alacsony kockázat. A cellában a
+                pontos érték is szerepel.
+              </p>
+            </article>
+            <article class="insight-card">
+              <p class="insight-kicker">Miért fontos?</p>
+              <p class="insight-text">
+                Jól látható, hogy ugyanaz a végzettségi szint egyik iparágban
+                védelmet jelent, másikban nem. Nincs "biztonságos" képzés
+                iparági kontextus nélkül.
+              </p>
+            </article>
+            <article class="insight-card">
+              <p class="insight-kicker">Értelmezési korlát</p>
+              <p class="insight-text">
+                Az iparágon belüli munkakörök kockázata nagyon eltérhet; az
+                összesítés ezeket a különbségeket elrejti.
+              </p>
+            </article>
+          </div>
+          <div
+            class="overflow-x-auto rounded-xl border border-slate-200 bg-white p-3"
+          >
+            <div id="chart-education-heatmap" class="viz-chart min-h-[360px]">
+              <p class="chart-placeholder">Vizualizáció betöltése...</p>
+            </div>
+          </div>
+        </section>
+
+        <section
+          id="viz-4"
+          class="section-anchor rounded-2xl border border-blue-100 bg-white p-5 shadow-soft sm:p-6"
+        >
+          <div class="mb-4 flex items-center justify-between gap-3">
+            <h3 class="section-title text-xl font-bold text-slate-900">
+              04 – Távmunka és AI-hatás kapcsolata
+            </h3>
+            <span
+              class="rounded-full border border-blue-100 bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700"
+              >Eloszlási elemzés</span
+            >
+          </div>
+          <div class="mb-4 grid gap-3 md:grid-cols-3">
+            <article class="insight-card">
+              <p class="insight-kicker">Mit mutat?</p>
+              <p class="insight-text">
+                A dobozos ábrák a távmunka-arány eloszlását mutatják alacsony,
+                mérsékelt és magas AI-hatású munkakörökben. A fekete rombusz az
+                átlagot jelöli, a szám felül a rekordok számát.
+              </p>
+            </article>
+            <article class="insight-card">
+              <p class="insight-kicker">Miért fontos?</p>
+              <p class="insight-text">
+                Ha a digitálisabb (remote) munkák jobban ki lennének téve az
+                AI-nak, a "Magas" doboz jobbra tolódna. Az ábra megmutatja, hogy
+                ez valójában mennyire érvényes.
+              </p>
+            </article>
+            <article class="insight-card">
+              <p class="insight-kicker">Értelmezési korlát</p>
+              <p class="insight-text">
+                A boxplot csoportszintű mintázatot mutat, nem személyre szabott
+                becslést. A három csoport közötti különbség kisebb lehet, mint
+                várnánk.
+              </p>
+            </article>
+          </div>
+          <div
+            class="overflow-x-auto rounded-xl border border-slate-200 bg-white p-3"
+          >
+            <div id="chart-remote-impact" class="viz-chart min-h-[340px]">
+              <p class="chart-placeholder">Vizualizáció betöltése...</p>
+            </div>
+          </div>
+        </section>
+
+        <section
+          id="viz-5"
+          class="section-anchor rounded-2xl border border-blue-100 bg-white p-5 shadow-soft sm:p-6"
+        >
+          <div class="mb-4 flex items-center justify-between gap-3">
+            <h3 class="section-title text-xl font-bold text-slate-900">
+              05 – Szélső kockázatú munkakörök
+            </h3>
+            <span
+              class="rounded-full border border-blue-100 bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700"
+              >Top 10 / Top 10</span
+            >
+          </div>
+          <div class="mb-4 grid gap-3 md:grid-cols-3">
+            <article class="insight-card">
+              <p class="insight-kicker">Mit mutat?</p>
+              <p class="insight-text">
+                A 10 legnagyobb, illetve legkisebb átlagos automatizációs
+                kockázatú munkakör. Csak olyan munkakörök szerepelnek,
+                amelyekhez legalább 20 adat tartozik az adathalmazban – ez
+                kiszűri a szórványos bejegyzéseket.
+              </p>
+            </article>
+            <article class="insight-card">
+              <p class="insight-kicker">Miért fontos?</p>
+              <p class="insight-text">
+                Konkrét pozícióneveket rendel a kockázathoz, így munkavállalók
+                és karriertanácsadók is közvetlen következtetéseket vonhatnak le
+                saját területükre vonatkozóan.
+              </p>
+            </article>
+            <article class="insight-card">
+              <p class="insight-kicker">Értelmezési korlát</p>
+              <p class="insight-text">
+                Az átlag tompítja az iparági szórást – egy munkakör különböző
+                szektorokban eltérő kockázatú lehet. A tooltip megmutatja, hány
+                adat alapján számolt az ábra.
+              </p>
+            </article>
+          </div>
+          <div
+            class="mb-4 rounded-xl border border-slate-200 bg-slate-50/60 p-3"
+          >
+            <p class="mb-3 text-sm text-slate-600">
+              Válaszd ki, melyik nézetet szeretnéd látni:
+            </p>
+            <div class="flex flex-wrap gap-2">
+              <button
+                @click="setRolesTab('high')"
+                :class="rolesTab === 'high' ? 'bg-red-500 text-white border-red-500' : 'bg-white text-slate-700 border-slate-200'"
+                class="rounded-full border px-4 py-2 text-sm font-semibold transition"
+              >
+                Magas kockázatú munkakörök
+              </button>
+              <button
+                @click="setRolesTab('low')"
+                :class="rolesTab === 'low' ? 'bg-emerald-500 text-white border-emerald-500' : 'bg-white text-slate-700 border-slate-200'"
+                class="rounded-full border px-4 py-2 text-sm font-semibold transition"
+              >
+                Alacsony kockázatú munkakörök
+              </button>
+            </div>
+          </div>
+          <div
+            class="overflow-x-auto rounded-xl border border-slate-200 bg-white p-3"
+          >
+            <div id="chart-top-bottom-single" class="viz-chart min-h-[360px]">
+              <p class="chart-placeholder">Vizualizáció betöltése...</p>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <section
+        id="conclusion"
+        class="section-anchor mx-auto mb-8 w-full max-w-6xl px-4 sm:px-6"
+      >
+        <div
+          class="rounded-2xl border border-blue-100 bg-white p-6 shadow-soft sm:p-8"
+        >
+          <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
+            <h2 class="section-title text-2xl font-bold text-blue-900">
+              Következtetés
+            </h2>
+            <span
+              class="rounded-full border border-blue-100 bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700"
+              >Stratégiai összefoglaló</span
+            >
+          </div>
+          <p class="text-sm leading-relaxed text-slate-700 sm:text-base">
+            Az öt vizualizáció együtt egységes képet ad: az AI-hatás nem
+            értelmezhető egyetlen mutató mentén. A munkaerőpiaci kitettséget
+            egyszerre formálja az iparági dinamika, a bérszint, a végzettség és
+            a munkavégzési forma kombinációja – ezek egyike sem elegendő
+            önmagában.
+          </p>
+          <div class="mt-5 grid gap-3 md:grid-cols-3">
+            <article class="conclusion-card">
+              <p class="conclusion-kicker">Fő tanulság #1</p>
+              <p class="conclusion-text">
+                A legtöbb iparágban az átlagos nyitott pozíciószám 2030-ra közel
+                stabil marad. A változások iparáganként eltérnek, de a
+                csoportosított oszlopdiagram alapján nem drámaiak – a százalékos
+                elmozdulások viszonylag mérsékeltek.
+              </p>
+            </article>
+            <article class="conclusion-card">
+              <p class="conclusion-kicker">Fő tanulság #2</p>
+              <p class="conclusion-text">
+                A bérszint és az automatizációs kockázat között nincs szoros
+                összefüggés: a trendvonal közel vízszintes. Magas jövedelmű
+                munkakörök között is találhatók erősen kitett szerepek, és
+                fordítva.
+              </p>
+            </article>
+            <article class="conclusion-card">
+              <p class="conclusion-kicker">Fő tanulság #3</p>
+              <p class="conclusion-text">
+                A hőtérkép alapján a végzettség kockázatcsökkentő hatása erősen
+                szektorfüggő. PhD-vel sem lehet mindenhol stabil pozícióra
+                számítani – az iparági kontextus nélküli képzési döntések
+                félrevezetőek lehetnek.
+              </p>
+            </article>
+          </div>
+          <div class="mt-5 rounded-xl border border-slate-200 bg-slate-50 p-4">
+            <p
+              class="text-xs font-bold uppercase tracking-wider text-slate-500"
+            >
+              Módszertani megjegyzés
+            </p>
+            <p class="mt-2 text-sm leading-relaxed text-slate-600">
+              Az ábrák feltáró célúak: nem oksági bizonyítékot adnak, és nem
+              helyettesítik a prediktív modelleket. A bér–kockázat diagramon és
+              a szélsőérték-ábrán az adatok munkakörönként átlagolva
+              szerepelnek, és csak legalább 10–20 megfigyeléssel rendelkező
+              munkakörök jelennek meg, hogy a szórványos bejegyzések ne
+              torzítsák a képet. A mintázatok értelmezéséhez iparági és
+              gazdasági háttérinformáció is szükséges.
+            </p>
+          </div>
+          <p class="mt-4 text-sm text-slate-600">
+            Forrás: Kaggle-ről származó <code>ai_job_trends_dataset.csv</code>.
+          </p>
+        </div>
+      </section>
+
+      <footer id="site-footer" class="footer-blue mt-10">
+        <div
+          class="mx-auto grid w-full max-w-6xl gap-8 px-4 py-10 sm:px-6 md:grid-cols-3"
+        >
+          <div>
+            <p
+              class="text-xs font-bold uppercase tracking-[0.14em] text-blue-200"
+            >
+              AI Job Trends
+            </p>
+            <h3 class="mt-2 text-xl font-semibold text-white">
+              Data Story projekt
+            </h3>
+            <p class="mt-3 text-sm leading-relaxed text-blue-100">
+              Professzionális, vizuális elemzés az AI munkaerőpiaci hatásairól,
+              stratégiai szemlélettel és közérthető adatnarratívával.
+            </p>
+          </div>
+          <div>
+            <p
+              class="text-xs font-bold uppercase tracking-[0.14em] text-blue-200"
+            >
+              Gyors navigáció
+            </p>
+            <ul class="mt-3 space-y-2 text-sm">
+              <li><a class="footer-link" href="#overview">Áttekintés</a></li>
+              <li><a class="footer-link" href="#viz-1">Vizualizációk</a></li>
+              <li>
+                <a class="footer-link" href="#conclusion">Következtetés</a>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <p
+              class="text-xs font-bold uppercase tracking-[0.14em] text-blue-200"
+            >
+              Adatforrás
+            </p>
+            <p class="mt-3 text-sm leading-relaxed text-blue-100">
+              Forrásfájl:
+              <code class="footer-code">ai_job_trends_dataset.csv</code><br />
+              Eredet: Kaggle nyilvános adatállomány.
+            </p>
+          </div>
+        </div>
+      </footer>
+    </div>
+    <script type="module" src="js/main.js"></script>
+  </body>
+</html>
