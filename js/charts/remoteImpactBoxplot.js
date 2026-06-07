@@ -3,23 +3,74 @@ import { DATA_URL, baseConfig } from "./shared.js";
 export const remoteImpactBoxplotSpec = {
   ...baseConfig,
   title: "A távmunka-arány alig függ az AI-hatás szintjétől",
+  height: 340,
+  width: "container",
   data: { url: DATA_URL },
   layer: [
+    // Globális átlag referenciavonal
     {
-      mark: { type: "boxplot", extent: 1.5, size: 52 },
+      mark: {
+        type: "rule",
+        color: "#64748b",
+        strokeWidth: 1.5,
+        strokeDash: [6, 4],
+        opacity: 0.6,
+      },
+      encoding: {
+        y: { datum: 50, type: "quantitative" },
+      },
+    },
+    // "Globális átlag" felirat
+    {
+      mark: {
+        type: "text",
+        align: "right",
+        fontSize: 11,
+        fontStyle: "italic",
+        color: "#64748b",
+        dy: -8,
+      },
+      encoding: {
+        x: { datum: "High", type: "nominal" },
+        y: { datum: 50, type: "quantitative" },
+        text: { value: "Globális átlag: 50%" },
+      },
+    },
+    // Boxplot
+    {
+      mark: {
+        type: "boxplot",
+        extent: 1.5,
+        size: 64,
+        median: { color: "white", strokeWidth: 2.5 },
+        outliers: { opacity: 0.15, size: 8 },
+      },
       encoding: {
         x: {
           field: "AI Impact Level",
           type: "nominal",
-          title: "AI-hatás szint",
+          title: "AI-hatás szintje",
           sort: ["Low", "Moderate", "High"],
-          axis: { labelFontSize: 13 },
+          axis: {
+            labelFontSize: 13,
+            labelExpr:
+              "datum.value === 'Low' ? 'Alacsony' : datum.value === 'Moderate' ? 'Mérsékelt' : 'Magas'",
+            domainColor: "#e2e8f0",
+            tickSize: 0,
+          },
         },
         y: {
           field: "Remote Work Ratio (%)",
           type: "quantitative",
           title: "Távmunka-arány (%)",
           scale: { domain: [0, 100] },
+          axis: {
+            labelExpr: "datum.value + '%'",
+            gridColor: "#e2e8f0",
+            gridDash: [3, 3],
+            domainColor: "#e2e8f0",
+            labelFontSize: 11,
+          },
         },
         color: {
           field: "AI Impact Level",
@@ -30,21 +81,9 @@ export const remoteImpactBoxplotSpec = {
             range: ["#10b981", "#f59e0b", "#ef4444"],
           },
         },
-        tooltip: [
-          {
-            field: "AI Impact Level",
-            type: "nominal",
-            title: "AI-hatás szint",
-          },
-          {
-            field: "Remote Work Ratio (%)",
-            type: "quantitative",
-            title: "Távmunka-arány (%)",
-            format: ".1f",
-          },
-        ],
       },
     },
+    // Átlag pont (diamond)
     {
       transform: [
         {
@@ -54,62 +93,72 @@ export const remoteImpactBoxplotSpec = {
           ],
           groupby: ["AI Impact Level"],
         },
-      ],
-      mark: {
-        type: "point",
-        shape: "diamond",
-        size: 150,
-        filled: true,
-        color: "#1f2937",
-        opacity: 1,
-      },
-      encoding: {
-        x: {
-          field: "AI Impact Level",
-          type: "nominal",
-          sort: ["Low", "Moderate", "High"],
-        },
-        y: { field: "meanRemote", type: "quantitative" },
-        tooltip: [
-          {
-            field: "AI Impact Level",
-            type: "nominal",
-            title: "AI-hatás szint",
-          },
-          {
-            field: "meanRemote",
-            type: "quantitative",
-            title: "Átlag (%)",
-            format: ".1f",
-          },
-          { field: "n", type: "quantitative", title: "Rekordok száma" },
-        ],
-      },
-    },
-    {
-      transform: [
         {
-          aggregate: [{ op: "count", as: "n" }],
-          groupby: ["AI Impact Level"],
+          calculate: "format(datum.meanRemote, '.1f') + '%'",
+          as: "meanLabel",
         },
-        { calculate: "'n = ' + datum.n", as: "nLabel" },
       ],
-      mark: {
-        type: "text",
-        fontSize: 12,
-        fontWeight: "bold",
-        color: "#374151",
-        dy: 0,
-      },
-      encoding: {
-        x: {
-          field: "AI Impact Level",
-          type: "nominal",
-          sort: ["Low", "Moderate", "High"],
+      layer: [
+        {
+          mark: {
+            type: "point",
+            shape: "diamond",
+            size: 180,
+            filled: true,
+            color: "#1e293b",
+            opacity: 1,
+          },
+          encoding: {
+            x: {
+              field: "AI Impact Level",
+              type: "nominal",
+              sort: ["Low", "Moderate", "High"],
+            },
+            y: { field: "meanRemote", type: "quantitative" },
+          },
         },
-        y: { value: 12 },
-        text: { field: "nLabel", type: "nominal" },
-      },
+        // Átlag felirat a diamond alatt
+        {
+          mark: {
+            type: "text",
+            fontSize: 13,
+            fontWeight: "bold",
+            color: "#1e293b",
+            dy: 22,
+          },
+          encoding: {
+            x: {
+              field: "AI Impact Level",
+              type: "nominal",
+              sort: ["Low", "Moderate", "High"],
+            },
+            y: { field: "meanRemote", type: "quantitative" },
+            text: { field: "meanLabel", type: "nominal" },
+          },
+        },
+        // n = felirat fent
+        {
+          mark: {
+            type: "text",
+            fontSize: 11,
+            color: "#94a3b8",
+            dy: -120,
+          },
+          encoding: {
+            x: {
+              field: "AI Impact Level",
+              type: "nominal",
+              sort: ["Low", "Moderate", "High"],
+            },
+            y: { datum: 100, type: "quantitative" },
+            text: {
+              field: "n",
+              type: "quantitative",
+              format: ",",
+            },
+          },
+        },
+      ],
     },
   ],
 };
